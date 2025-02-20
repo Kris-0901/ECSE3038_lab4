@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
-origins = [ "https://ecse3038-lab3-tester.netlify.app" ]
 
+origins = [ "https://ecse3038-lab3-tester.netlify.app" ]
 
 
 load_dotenv()
@@ -26,3 +26,38 @@ app.add_middleware(
 )
 
 connection = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("MONGODB_URL"))
+db = connection.iot_water_tanks
+profile = db.profile
+tanks = db.tanks
+
+PyObjectId = Annotated[str, BeforeValidator(str)] # ID for MongoDB
+
+
+class Profile(BaseModel):
+    id: PyObjectId | None = Field(default=None, alias="_id")
+    username: str
+    color: str
+    role: str
+
+class ProfileCollection(BaseModel):
+    profile: List[Profile]
+
+
+class Tank(BaseModel):
+    id: PyObjectId | None = Field(default=None, alias="_id")
+    location: str
+    lat: float
+    long: float
+
+class Tank_Update(BaseModel):
+    location:str | None = None
+    lat:float | None = None
+    long:float | None = None
+
+@app.get("/profile")
+async def get_profile():
+    profile_collection = await profile.find().to_list(2)
+
+    return ProfileCollection(profile=profile_collection)
+
+
