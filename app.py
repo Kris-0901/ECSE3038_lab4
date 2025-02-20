@@ -9,6 +9,12 @@ from fastapi.responses import Response
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime,timedelta
+from zoneinfo import ZoneInfo,available_timezones
+
+#print(available_timezones())
+timestamp = datetime.now(ZoneInfo('America/Jamaica'))
+timestamp_formatted = timestamp.strftime("%B %d,%Y %I:%M %p %Z")
 
 
 origins = [ "https://ecse3038-lab3-tester.netlify.app" ]
@@ -35,12 +41,13 @@ PyObjectId = Annotated[str, BeforeValidator(str)] # ID for MongoDB
 
 class Profile(BaseModel):
     id: PyObjectId | None = Field(default=None, alias="_id")
+    last_updated:str = timestamp_formatted
     username: str
-    color: str
     role: str
+    color: str
 
 class ProfileCollection(BaseModel):
-    profile: List[Profile]
+    profiles: List[Profile]
 
 
 class Tank(BaseModel):
@@ -58,6 +65,13 @@ class Tank_Update(BaseModel):
 async def get_profile():
     profile_collection = await profile.find().to_list(2)
 
-    return ProfileCollection(profile=profile_collection)
+    return ProfileCollection(profiles=profile_collection)
 
+@app.post("/profile",status_code=status.HTTP_201_CREATED)
+async def create_profile(new_profile:Profile):
+    profile_dict=new_profile.model_dump(exclude=["id"])
+    created_profile = await profile.insert_one(profile_dict)
 
+    profiles = await profile.find_one({"_id":created_profile.inserted_id})
+
+    return Profile(**profiles)
