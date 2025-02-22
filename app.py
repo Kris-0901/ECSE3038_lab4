@@ -36,6 +36,7 @@ db = connection.iot_water_tanks
 profile = db.profile
 tanks = db.tanks
 
+
 PyObjectId = Annotated[str, BeforeValidator(str)] # ID for MongoDB
 
 
@@ -69,9 +70,17 @@ async def get_profile():
 
 @app.post("/profile",status_code=status.HTTP_201_CREATED)
 async def create_profile(new_profile:Profile):
-    profile_dict=new_profile.model_dump(exclude=["id"])
-    created_profile = await profile.insert_one(profile_dict)
+   
+    number_of_profiles = await profile.count_documents({})
+    # print (number_of_profiles)
 
-    profiles = await profile.find_one({"_id":created_profile.inserted_id})
+    if number_of_profiles < 1:
+        # post the profile
+        profile_dict = new_profile.model_dump(exclude=["id"])
+        created_profile = await profile.insert_one(profile_dict)
+
+        profiles = await profile.find_one({"_id":created_profile.inserted_id})
+    else: 
+        raise HTTPException(status_code = 409, detail = "Profile already exisits")
 
     return Profile(**profiles)
