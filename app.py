@@ -57,6 +57,9 @@ class Tank(BaseModel):
     lat: float
     long: float
 
+class TankCollection(BaseModel):
+    all_tanks: List[Tank]
+
 class Tank_Update(BaseModel):
     location:str | None = None
     lat:float | None = None
@@ -64,7 +67,7 @@ class Tank_Update(BaseModel):
 
 @app.get("/profile")
 async def get_profile():
-    profile_collection = await profile.find().to_list(2)
+    profile_collection = await profile.find().to_list(1)
 
     return ProfileCollection(profiles=profile_collection)
 
@@ -84,3 +87,9 @@ async def create_profile(new_profile:Profile):
         raise HTTPException(status_code = 409, detail = "Profile already exisits")
 
     return Profile(**profiles)
+
+@app.get("/tank")
+async def get_all_tanks():
+    tank_collection = await tanks.find().to_list(1001)
+
+    return TankCollection(all_tanks = tank_collection)
