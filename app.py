@@ -67,14 +67,18 @@ class Tank_Update(BaseModel):
 
 @app.get("/profile")
 async def get_profile():
+    number_of_profiles = await profile.count_documents({})
     profile_collection = await profile.find_one({})
+
+    if number_of_profiles > 0:
+        profile_format = Profile(**profile_collection)
+        #print(profile_format)
+
+        profile_json = jsonable_encoder(profile_format)
+
+        return JSONResponse(profile_json,status_code=200)
     
-    profile_format= Profile(**profile_collection)
-    #print(profile_format)
-
-    profile_json = jsonable_encoder(profile_format)
-
-    return JSONResponse(profile_json,status_code=200)
+    return JSONResponse({},status_code=200)
 
 @app.post("/profile",status_code=status.HTTP_201_CREATED)
 async def create_profile(new_profile:Profile):
@@ -98,17 +102,19 @@ async def create_profile(new_profile:Profile):
 
     profile_json = jsonable_encoder(profile_format)
 
-    return JSONResponse(profile_json,status_code=200)
+    return JSONResponse(profile_json,status_code=201)
 
 @app.get("/tank")
 async def get_all_tanks():
     tank_collection = await tanks.find().to_list(1001)
 
-    tanks_list = TankCollection(all_tanks = tank_collection)
+    tanks_list = []
+
+    for tank in tank_collection:
+        tanks_list.append(Tank(**tank))
 
     tanks_list_json = jsonable_encoder(tanks_list)
-    print (tanks_list_json)
-
+    
     return JSONResponse(tanks_list_json,status_code=200)
 
 @app.post ("/tank",status_code=status.HTTP_201_CREATED)
