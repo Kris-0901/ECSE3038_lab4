@@ -104,7 +104,12 @@ async def create_profile(new_profile:Profile):
 async def get_all_tanks():
     tank_collection = await tanks.find().to_list(1001)
 
-    return TankCollection(all_tanks = tank_collection)
+    tanks_list = TankCollection(all_tanks = tank_collection)
+
+    tanks_list_json = jsonable_encoder(tanks_list)
+    print (tanks_list_json)
+
+    return JSONResponse(tanks_list_json,status_code=200)
 
 @app.post ("/tank",status_code=status.HTTP_201_CREATED)
 async def add_tank(new_tank:Tank):
