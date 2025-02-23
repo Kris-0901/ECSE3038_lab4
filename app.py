@@ -93,3 +93,12 @@ async def get_all_tanks():
     tank_collection = await tanks.find().to_list(1001)
 
     return TankCollection(all_tanks = tank_collection)
+
+@app.post ("/tank",status_code=status.HTTP_201_CREATED)
+async def add_tank(new_tank:Tank):
+    tank_dict = new_tank.model_dump(exclude=["id"])
+    created_tank = await tanks.insert_one(tank_dict)
+
+    tank = await tanks.find_one({"_id":created_tank.inserted_id})
+
+    return Tank(**tank)
