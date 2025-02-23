@@ -101,4 +101,9 @@ async def add_tank(new_tank:Tank):
 
     tank = await tanks.find_one({"_id":created_tank.inserted_id})
 
+    timestamp = datetime.now(ZoneInfo('America/Jamaica'))
+    timestamp_formatted = timestamp.strftime("%B %d,%Y %I:%M %p %Z")
+
+    await profile.update_one({},{'$set':{'last_updated':timestamp_formatted}})
+
     return Tank(**tank)
