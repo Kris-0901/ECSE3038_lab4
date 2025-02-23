@@ -74,11 +74,12 @@ async def get_profile():
 @app.post("/profile",status_code=status.HTTP_201_CREATED)
 async def create_profile(new_profile:Profile):
    
+    # check for an exixting profile
     number_of_profiles = await profile.count_documents({})
     # print (number_of_profiles)
 
     if number_of_profiles < 1:
-        # post the profile
+        # post the profile if no profile exists
         profile_dict = new_profile.model_dump(exclude=["id"])
         created_profile = await profile.insert_one(profile_dict)
 
@@ -107,3 +108,25 @@ async def add_tank(new_tank:Tank):
     await profile.update_one({},{'$set':{'last_updated':timestamp_formatted}})
 
     return Tank(**tank)
+
+@app.patch("/tank/{id}",response_model=Tank,status_code=status.HTTP_200_OK)
+async def update_tank(id:str, updated_tank:Tank_Update):
+    tank_update_dict = updated_tank.model_dump(exclude_unset=True)
+
+    new_updated_tank = await tanks.find_one_and_update(
+        {'_id': ObjectId(id)},
+        {'$set': tank_update_dict},
+        return_document=ReturnDocument.AFTER
+    )
+
+    if new_updated_tank is not None:
+
+        timestamp = datetime.now(ZoneInfo('America/Jamaica'))
+        timestamp_formatted = timestamp.strftime("%B %d,%Y %I:%M %p %Z")
+
+        await profile.update_one({},{'$set':{'last_updated':timestamp_formatted}})
+
+        return new_updated_tank
+    
+    else:
+        raise HTTPException(status_code=404,detail=f"Tank wit id: '{id}' not found")
