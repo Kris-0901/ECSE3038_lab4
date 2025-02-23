@@ -130,3 +130,18 @@ async def update_tank(id:str, updated_tank:Tank_Update):
     
     else:
         raise HTTPException(status_code=404,detail=f"Tank wit id: '{id}' not found")
+    
+@app.delete("/tank/{id}")
+async def delete_tank(id: str):
+    delete_tank_result= await tanks.delete_one({'_id':ObjectId(id)})
+
+    if delete_tank_result.deleted_count == 1:
+
+        timestamp = datetime.now(ZoneInfo('America/Jamaica'))
+        timestamp_formatted = timestamp.strftime("%B %d,%Y %I:%M %p %Z")
+
+        await profile.update_one({},{'$set':{'last_updated':timestamp_formatted}})
+
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    
+    raise HTTPException(status_code=404, detail=f"Tank with id: '{id}' not found")
