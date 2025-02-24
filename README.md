@@ -74,7 +74,7 @@ ___
 
 - Status Code: `201 Created`
 
-```
+```json
 {
     "id": "67bbb20b253f0ecdab7c2b76",
     "last_updated": "February 23,2025 06:40 PM EST",
