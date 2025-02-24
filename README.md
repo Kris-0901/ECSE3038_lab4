@@ -72,7 +72,7 @@ ___
 
 *Expected response:*
 
-- Status Code: `201 OK`
+- Status Code: `201 Created`
 
 ```
 {
@@ -86,7 +86,7 @@ ___
 
 ### Tank Routes
 
-### GET `/tank`
+#### GET `/tank`
 ___
 
 
@@ -118,7 +118,7 @@ ___
 
 ```
 
-### POST `/tank`
+#### POST `/tank`
 ___
 
 *Expected Request:*
@@ -145,7 +145,7 @@ ___
 }
 
 ```
-### PATCH `/tank/{id}`
+#### PATCH `/tank/{id}`
 ___
 
 *Expected Request:*
@@ -183,7 +183,7 @@ ___
 
 ```
 
-### DELETE `/tank/{id}`
+#### DELETE `/tank/{id}`
 ___
 
 *Expected Response:*
