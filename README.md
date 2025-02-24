@@ -77,7 +77,7 @@ ___
 ```
 {
     "id": "67bbb20b253f0ecdab7c2b76",
-    "last_updated": "2/3/2022, 8:48:51 PM",
+    "last_updated": "February 23,2025 06:40 PM EST",
     "username": "kris0901",
     "role": "Engineer",
     "color": "##d88e0e"
