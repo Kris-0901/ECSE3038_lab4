@@ -106,10 +106,10 @@ ___
 
 [
     {
-    "id": "0cf996c3-d9ca-4c0b-ab01-52b26c9050ec",
-    "location": "Engineering department",
-    "lat": "18.0051862",
-    "long": "-76.7505108",
+        "id": "0cf996c3-d9ca-4c0b-ab01-52b26c9050ec",
+        "location": "Engineering department",
+        "lat": "18.0051862",
+        "long": "-76.7505108",
     },
     .
     .
