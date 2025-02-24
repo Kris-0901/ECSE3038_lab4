@@ -155,7 +155,7 @@ async def update_tank(id:str, updated_tank:Tank_Update):
         return new_updated_tank
     
     else:
-        raise HTTPException(status_code=404,detail=f"Tank wit id: '{id}' not found")
+        raise HTTPException(status_code=404,detail=f"Tank with id: '{id}' not found")
     
 @app.delete("/tank/{id}")
 async def delete_tank(id: str):
